@@ -6,7 +6,7 @@ import subprocess
 import sys
 from . import __version__
 from .core import inspect_project, make_plan, run_local_model, research_github, patch_paths, validate_patch_paths, apply_patch
-from .systems import CORE_SYSTEMS, LINKED_FILE_SYSTEMS, CheckpointStore, SecurityGuard
+from .systems import CORE_SYSTEMS, LINKED_FILE_SYSTEMS, CheckpointStore, SecurityGuard, AutoContinue
 from .workflow import run_workflow
 
 def doctor():
@@ -129,8 +129,8 @@ def main():
             return 0 if valid else 2
         if args.command == "resume":
             root = os.path.realpath(os.path.abspath(args.root))
-            store = CheckpointStore()
-            checkpoint = store.load(root)
+            auto_continue = AutoContinue(CheckpointStore())
+            checkpoint = auto_continue.pending(root)
             if not checkpoint:
                 print("No saved checkpoint for this project.")
                 return 0
@@ -139,7 +139,8 @@ def main():
             print("Updated epoch: " + str(checkpoint.get("updated_at", "unknown")))
             print("Checkpoint details are metadata only; no code or commands are auto-executed.")
             answer = input("Restart the bounded workflow for this task? Type RESUME: ").strip()
-            if answer != "RESUME":
+            checkpoint = auto_continue.confirm_resume(root, answer)
+            if not checkpoint:
                 print("Resume cancelled.")
                 return 0
             return run_workflow(checkpoint.get("task", ""), root)
