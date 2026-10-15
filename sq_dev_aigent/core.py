@@ -205,7 +205,7 @@ def apply_patch(path, root="."):
     answer = input("Apply this patch to the selected project? Type APPLY to confirm: ").strip()
     if answer != "APPLY":
         print("Cancelled; no files changed.")
-        return 1
+        return 130
     backups = backup_existing(root, paths)
     command = ["git", "apply", "--whitespace=nowarn", patch_file]
     p = subprocess.Popen(command, cwd=root)
