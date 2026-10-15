@@ -269,10 +269,28 @@ class TerminalExecutor(object):
         process = subprocess.Popen(command, cwd=cwd, shell=True)
         try:
             return process.wait(timeout=max(1, min(int(timeout), 900)))
-        except TypeError:
-            # Python versions with wait(timeout=...) support are expected; avoid unsafe background cleanup.
-            process.terminate()
-            return process.wait()
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait()
+            return 124
+
+    @staticmethod
+    def capture(command, confirmation, cwd, timeout=900):
+        if str(confirmation).strip() != "RUN":
+            raise RuntimeError("Command execution cancelled: type RUN to confirm.")
+        import subprocess
+        process = subprocess.Popen(command, cwd=cwd, shell=True, stdout=subprocess.PIPE,
+                                   stderr=subprocess.STDOUT)
+        try:
+            output = process.communicate(timeout=max(1, min(int(timeout), 900)))[0]
+            code = process.returncode
+        except subprocess.TimeoutExpired:
+            process.kill()
+            output = process.communicate()[0]
+            code = 124
+        if not isinstance(output, str):
+            output = output.decode("utf-8", "replace")
+        return code, SecurityGuard.redact(output)
 
 class WorkflowEngine(object):
     def __init__(self, store=None):
