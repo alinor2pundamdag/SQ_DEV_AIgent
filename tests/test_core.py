@@ -2,6 +2,8 @@ import json
 import os
 import tempfile
 import unittest
+import subprocess
+from unittest.mock import patch as mock_patch
 from sq_dev_aigent.core import patch_paths, validate_patch_paths, project_files, safe_root
 from sq_dev_aigent.systems import (CheckpointStore, SecurityGuard, RippleLoop,
                                    RequirementChecklist, CORE_SYSTEMS, LINKED_FILE_SYSTEMS)
@@ -58,6 +60,27 @@ class CoreTests(unittest.TestCase):
                 self.assertEqual(checkpoint["task"], "finish tests")
                 self.assertEqual(checkpoint["phase"], "verification")
                 self.assertIsNone(store.load(base))
+
+    def test_patch_apply_preflight_and_backup(self):
+        with tempfile.TemporaryDirectory() as root, tempfile.TemporaryDirectory() as temp:
+            subprocess.check_call(["git", "init", root], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            target = os.path.join(root, "file.txt")
+            with open(target, "w") as stream:
+                stream.write("before\\n")
+            patch_file = os.path.join(temp, "change.patch")
+            with open(patch_file, "w") as stream:
+                stream.write("--- a/file.txt\\n+++ b/file.txt\\n@@ -1 +1 @@\\n-before\\n+after\\n")
+            with mock_patch("builtins.input", return_value="APPLY"):
+                from sq_dev_aigent.core import apply_patch
+                self.assertEqual(apply_patch(patch_file, root), 0)
+            with open(target, "r") as stream:
+                self.assertEqual(stream.read(), "after\\n")
+            backup_root = os.path.join(root, ".sqai-backups")
+            self.assertTrue(os.path.isdir(backup_root))
+            backup_files = []
+            for current, dirs, names in os.walk(backup_root):
+                backup_files.extend(names)
+            self.assertIn("file.txt", backup_files)
 
     def test_secret_redaction(self):
         text = "api_key=abc123 Authorization: Bearer abc.def"
