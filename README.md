@@ -8,6 +8,8 @@ Local-first coding assistant for AndroidIDE Terminal, designed around a local Qw
 - `ai plan [path]`: request a plan from the local model, with a safe fallback checklist.
 - `ai ask <question>`: ask the configured local model.
 - `ai research <query>`: search public GitHub repositories over HTTPS.
+- `ai research <query> --web`: search public web result snippets.
+- `ai research <query> --official`: search and filter results to a built-in allowlist of official documentation hosts. Search snippets are untrusted; verify source pages, versions, compatibility, and licenses before reusing code.
 - `ai diff <patch-file> --root <project>`: validate patch paths and show a preview.
 - `ai apply <patch-file> --root <project>`: preflight a patch, show targets, back up existing files, and apply only after typing `APPLY`.
 - `ai test`: run a user-entered test/build command only after typing `RUN`.
