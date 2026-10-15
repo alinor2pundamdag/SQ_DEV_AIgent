@@ -59,6 +59,6 @@ python -m unittest discover -s tests -v
 sh -n install.sh
 sh tests/test_installer.sh
 ```
-GitHub Actions runs compilation, unit tests, catalog validation, installer syntax, and a shared-install smoke test. Check the Actions tab for the actual result; repository commits alone do not prove CI passed.
+GitHub Actions runs compilation, unit tests, catalog validation, installer syntax, and a shared-install smoke test. After the manual-trigger workflow is merged, it can also be started from GitHub Actions → Validate foundation → Run workflow. Check the run result; repository commits alone do not prove CI passed.
 
 See [master blueprint](docs/MASTER_BLUEPRINT.md), [AndroidIDE setup](docs/ANDROIDIDE_SETUP.md), [architecture](docs/ARCHITECTURE.md), [roadmap](docs/ROADMAP.md), and [project status](docs/PROJECT_STATUS.md).
