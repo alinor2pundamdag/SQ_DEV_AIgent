@@ -6,7 +6,8 @@ import subprocess
 from unittest.mock import patch as mock_patch
 from sq_dev_aigent.core import patch_paths, validate_patch_paths, project_files, safe_root
 from sq_dev_aigent.systems import (CheckpointStore, SecurityGuard, RippleLoop,
-                                   RequirementChecklist, CORE_SYSTEMS, LINKED_FILE_SYSTEMS)
+                                   RequirementChecklist, CORE_SYSTEMS, LINKED_FILE_SYSTEMS,
+                                   AutoContinue)
 
 class CoreTests(unittest.TestCase):
     def test_patch_paths(self):
@@ -18,6 +19,11 @@ class CoreTests(unittest.TestCase):
         delete_patch = "--- a/src/old.py\n+++ /dev/null\n@@ -1 +0,0 @@\n-old\n"
         self.assertEqual(patch_paths(new_patch), ["src/new.py"])
         self.assertEqual(patch_paths(delete_patch), ["src/old.py"])
+
+    def test_reject_quoted_patch_paths(self):
+        patch = '--- "a/file name.txt"\\n+++ "b/file name.txt"\\n'
+        with self.assertRaises(ValueError):
+            patch_paths(patch)
 
     def test_reject_parent_path(self):
         with tempfile.TemporaryDirectory() as root:
@@ -83,10 +89,21 @@ class CoreTests(unittest.TestCase):
             self.assertIn("file.txt", backup_files)
 
     def test_secret_redaction(self):
-        text = "api_key=abc123 Authorization: Bearer abc.def"
+        text = "api_key=abc123 AWS_SECRET_ACCESS_KEY=secret456 Authorization: Bearer abc.def"
         redacted = SecurityGuard.redact(text)
         self.assertNotIn("abc123", redacted)
+        self.assertNotIn("secret456", redacted)
         self.assertNotIn("abc.def", redacted)
+
+    def test_auto_continue_requires_confirmation(self):
+        with tempfile.TemporaryDirectory() as base, tempfile.TemporaryDirectory() as project:
+            store = CheckpointStore(base)
+            store.save(project, "continue work", "verification", {"attempt": 1})
+            auto = AutoContinue(store)
+            self.assertIsNotNone(auto.pending(project))
+            self.assertIsNone(auto.confirm_resume(project, "yes"))
+            resumed = auto.confirm_resume(project, "RESUME")
+            self.assertEqual(resumed["task"], "continue work")
 
     def test_repair_loop_caps_attempts(self):
         loop = RippleLoop(99)
