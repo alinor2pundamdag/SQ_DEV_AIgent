@@ -81,7 +81,12 @@ def run_local_model(prompt, max_tokens=700):
     command = [llama, "-m", model, "-p", prompt, "-n", str(max_tokens), "--temp", "0.2"]
     try:
         p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = p.communicate()
+        try:
+            out, err = p.communicate(timeout=180)
+        except subprocess.TimeoutExpired:
+            p.kill()
+            out, err = p.communicate()
+            raise RuntimeError("Local model timed out after 180 seconds.")
     except OSError as exc:
         raise RuntimeError("Could not start local model: " + str(exc))
     text = out.decode("utf-8", "replace").strip()
@@ -144,15 +149,22 @@ def validate_patch_paths(root, paths):
     for rel in paths:
         if not rel or os.path.isabs(rel) or rel == ".." or rel.startswith("../") or "/../" in rel or rel.startswith("~"):
             raise ValueError("Unsafe patch path rejected: " + rel)
-        target = os.path.realpath(os.path.join(root, rel))
+        joined = os.path.abspath(os.path.join(root, rel))
+        target = os.path.realpath(joined)
         if target != root and not target.startswith(root + os.sep):
             raise ValueError("Patch escapes selected project root: " + rel)
-        if os.path.islink(os.path.join(root, rel)):
-            raise ValueError("Symlink patch target rejected: " + rel)
+        # Reject symlinks in every existing component, not only the final target.
+        cursor = root
+        for part in rel.split(os.sep):
+            if part in ("", "."):
+                continue
+            cursor = os.path.join(cursor, part)
+            if os.path.islink(cursor):
+                raise ValueError("Symlink patch path rejected: " + rel)
     return root
 
 def backup_existing(root, paths):
-    stamp = time.strftime("%Y%m%d-%H%M%S")
+    stamp = time.strftime("%Y%m%d-%H%M%S") + "-{0}".format(int(time.time() * 1000) % 1000000)
     backup_root = os.path.join(root, ".sqai-backups", stamp)
     copied = []
     for rel in paths:
