@@ -73,18 +73,18 @@ def _safe_source_context(root, paths, max_total=30000):
         try:
             with open(full, "rb") as stream:
                 raw = stream.read(3001)
-            if len(raw) > 3000 or b"\\x00" in raw:
+            if len(raw) > 3000 or b"\x00" in raw:
                 continue
             text = raw.decode("utf-8", "replace")
         except (IOError, OSError):
             continue
         text = SecurityGuard.redact(text)
-        chunk = "\\n### FILE: " + rel + " ###\\n" + text
+        chunk = "\n### FILE: " + rel + " ###\n" + text
         if total + len(chunk) > max_total:
             break
         parts.append(chunk)
         total += len(chunk)
-    return "\\n".join(parts)
+    return "\n".join(parts)
 
 def run_workflow(goal, root="."):
     root = os.path.realpath(os.path.abspath(root))
