@@ -18,7 +18,7 @@ Last updated: 2026-10-15
 - Bounded workflow: proposal → explicit patch approval → exact user-approved test/build command → evidence-based result; at most three proposals.
 - Shared project-scoped checkpoints and explicit resume confirmation.
 - Patch preflight, symlink/traversal checks, existing-file backups, local-model timeout, redacted test output.
-- Unit/integration tests for paths, symlink rejection, checkpoint isolation, redaction, repair limit, catalog size, and approved patch application.
+- Unit/integration tests for paths, symlink rejection, checkpoint isolation, redaction, repair limit, catalog size, public search parsing, and approved patch application.
 - CI catalog validation and installer smoke test.
 - Durable shared installer that should remain usable after the checkout is moved or removed.
 - Master blueprint, architecture, AndroidIDE setup, roadmap, and updated README.
