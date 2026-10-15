@@ -141,10 +141,21 @@ def run_workflow(goal, root="."):
             store.save(root, intent["goal"], "blocked", {"attempt": attempt, "reason": "no valid diff"})
             return 2
         patch_file = _write_proposal(root, attempt, patch_text)
-        paths = patch_paths(patch_text)
-        validate_patch_paths(root, paths)
-        for path in paths:
-            file_manager.resolve(path)
+        try:
+            paths = patch_paths(patch_text)
+            validate_patch_paths(root, paths)
+            for path in paths:
+                file_manager.resolve(path)
+        except (ValueError, RuntimeError) as exc:
+            last_failure = SecurityGuard.redact(str(exc))
+            loop.record(attempt, "validate", last_failure)
+            store.save(root, intent["goal"], "invalid_patch", {
+                "attempt": attempt, "failure": last_failure, "repair_history": loop.history
+            })
+            print("Rejected unsafe or invalid patch: " + last_failure)
+            if attempt < 3 and input("Allow a corrected proposal? Type REPAIR: ").strip() == "REPAIR":
+                continue
+            return 2
         impact = PreEditImpactCheck.inspect(paths, known_files)
         completeness = CompletenessAuditor.audit(paths, known_files)
         print("\nProposal {0}/3 — targets:".format(attempt))
@@ -160,10 +171,27 @@ def run_workflow(goal, root="."):
         print(patch_text[:12000])
         print("===== END PROPOSED DIFF =====")
         # apply_patch is the single approval gate and requires the exact word APPLY.
-        result = apply_patch(patch_file, root)
+        try:
+            result = apply_patch(patch_file, root)
+        except (ValueError, RuntimeError, OSError) as exc:
+            last_failure = SecurityGuard.redact(str(exc))
+            loop.record(attempt, "preflight", last_failure)
+            store.save(root, intent["goal"], "patch_preflight_failed", {
+                "attempt": attempt, "failure": last_failure, "repair_history": loop.history
+            })
+            print("Patch was not applied: " + last_failure)
+            if "not inside a Git repository" in last_failure:
+                return 2
+            if attempt < 3 and input("Allow a corrected proposal? Type REPAIR: ").strip() == "REPAIR":
+                continue
+            return 2
+        if result == 130:
+            store.save(root, intent["goal"], "cancelled", {"attempt": attempt, "patch_file": patch_file})
+            print("Workflow cancelled by user; no repair attempt consumed.")
+            return 0
         if result != 0:
-            loop.record(attempt, "apply", "Patch application failed with exit code {0}".format(result))
             last_failure = "Patch application failed with exit code {0}".format(result)
+            loop.record(attempt, "apply", last_failure)
             store.save(root, intent["goal"], "patch_failed", {"attempt": attempt, "result": result})
             if attempt < 3:
                 again = input("Allow a new repair proposal? Type REPAIR to continue: ").strip()
