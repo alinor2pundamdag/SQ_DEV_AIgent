@@ -37,7 +37,14 @@ def run_selected_test():
         print("Cancelled.")
         return 0
     print("Running selected command. Output below is untrusted project output:")
-    return subprocess.call(command, shell=True, cwd=os.getcwd())
+    process = subprocess.Popen(command, shell=True, cwd=os.getcwd())
+    try:
+        return process.wait(timeout=900)
+    except subprocess.TimeoutExpired:
+        process.kill()
+        process.wait()
+        print("Command timed out after 900 seconds.")
+        return 124
 
 def main():
     parser = argparse.ArgumentParser(prog="ai", description="Supervised local-first coding assistant")
