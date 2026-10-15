@@ -60,10 +60,6 @@
     "description": "Locate Kotlin source and probable package structure."
   },
   {
-    "id": "java-file-map",
-    "description": "Locate Java source and probable package structure."
-  },
-  {
     "id": "manifest-review",
     "description": "Review AndroidManifest.xml for structural and permission concerns."
   },
@@ -72,20 +68,8 @@
     "description": "Inspect Gradle files for configuration consistency."
   },
   {
-    "id": "resource-link-review",
-    "description": "Find likely XML/resource references by path and name."
-  },
-  {
-    "id": "api-contract-review",
-    "description": "Compare declared API inputs and outputs when files are available."
-  },
-  {
     "id": "schema-review",
     "description": "Review database schema changes for compatibility risks."
-  },
-  {
-    "id": "migration-review",
-    "description": "Review migration ordering and rollback considerations."
   },
   {
     "id": "config-review",
@@ -226,14 +210,6 @@
   {
     "id": "go-test-adapter",
     "description": "Suggest go test ./... when go.mod exists."
-  },
-  {
-    "id": "rust-test-adapter",
-    "description": "Suggest cargo test when Cargo.toml exists."
-  },
-  {
-    "id": "make-test-adapter",
-    "description": "Suggest Make targets only after inspecting the Makefile."
   },
   {
     "id": "repair-diagnosis",
