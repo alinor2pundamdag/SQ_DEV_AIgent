@@ -27,7 +27,8 @@
 - [x] At most three proposals, with approval for each patch
 - [x] Read-only public GitHub repository search and basic source/license review skills catalog
 - [x] Repository/terminal-independent core abstractions and project command suggestions
-- [ ] Broader official-documentation research with source/compatibility evidence
+- [x] Public web and allowlisted official-documentation search modes
+- [ ] Automated source-page, version, compatibility, and license evidence verification
 - [ ] Verify AndroidIDE Python 3.6.9 and installed llama.cpp flags on device
 - [ ] Full end-to-end acceptance on a disposable test project
 - [ ] Improve Android dependency graph beyond filename heuristics
