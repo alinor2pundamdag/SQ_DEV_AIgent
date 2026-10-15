@@ -25,7 +25,8 @@ Last updated: 2026-10-15
 
 ## Current verification state
 - GitHub writes succeeded for the implementation and test commits listed in repository history.
-- CI result for the latest commit has not yet been verified in this status document.
+- GitHub Actions acceptance run #53 completed successfully on the PR merge ref: Python 3.8 and 3.11 both passed module compilation, all 17 unit tests, 100-skill catalog validation, installer syntax, and the shared-install smoke test.
+- Python 3.6.15 was unavailable on the Ubuntu 24.04 hosted runner; the CI matrix now uses 3.8 and 3.11. Python 3.6.9 compatibility remains a device-side acceptance gate.
 - AndroidIDE device tests have not been run from this session.
 - The earlier reported device runtime paths remain un-reprobed:
   - Model: `/home/test/sq-dev-ai/models/qwen2.5-coder-3b-instruct-q4_k_m.gguf`
