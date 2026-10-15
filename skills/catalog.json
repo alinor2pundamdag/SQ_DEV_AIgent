@@ -1,426 +1,426 @@
 [
-  [
-    "project-inspection",
-    "Inventory project files without reading excluded secrets."
-  ],
-  [
-    "git-status",
-    "Summarize current branch, commit, and working-tree status."
-  ],
-  [
-    "stack-detection",
-    "Infer languages and frameworks from project markers."
-  ],
-  [
-    "entry-point-discovery",
-    "Identify likely application entry points from filenames and config."
-  ],
-  [
-    "dependency-map",
-    "Map declared dependencies and package manifests."
-  ],
-  [
-    "build-system-detection",
-    "Detect Gradle, Python, Node, Go, Rust, and Make projects."
-  ],
-  [
-    "test-discovery",
-    "Find existing test directories and test configuration."
-  ],
-  [
-    "requirements-extraction",
-    "Convert a request into explicit acceptance criteria."
-  ],
-  [
-    "task-decomposition",
-    "Split a large request into small verifiable stages."
-  ],
-  [
-    "implementation-plan",
-    "Produce an ordered implementation plan."
-  ],
-  [
-    "change-scope-control",
-    "Keep proposed changes focused on the requested outcome."
-  ],
-  [
-    "risk-assessment",
-    "Identify likely regressions and unsafe operations."
-  ],
-  [
-    "pre-edit-impact",
-    "List related files before proposing changes."
-  ],
-  [
-    "android-link-map",
-    "Surface likely Android manifest, resource, and Gradle relationships."
-  ],
-  [
-    "kotlin-file-map",
-    "Locate Kotlin source and probable package structure."
-  ],
-  [
-    "java-file-map",
-    "Locate Java source and probable package structure."
-  ],
-  [
-    "manifest-review",
-    "Review AndroidManifest.xml for structural and permission concerns."
-  ],
-  [
-    "gradle-review",
-    "Inspect Gradle files for configuration consistency."
-  ],
-  [
-    "resource-link-review",
-    "Find likely XML/resource references by path and name."
-  ],
-  [
-    "api-contract-review",
-    "Compare declared API inputs and outputs when files are available."
-  ],
-  [
-    "schema-review",
-    "Review database schema changes for compatibility risks."
-  ],
-  [
-    "migration-review",
-    "Review migration ordering and rollback considerations."
-  ],
-  [
-    "config-review",
-    "Inspect configuration without exposing secret values."
-  ],
-  [
-    "secret-filename-filter",
-    "Exclude common secret-bearing filenames from inventory."
-  ],
-  [
-    "secret-redaction",
-    "Redact common token and password patterns from captured text."
-  ],
-  [
-    "license-identification",
-    "Identify license files and declared dependency licenses."
-  ],
-  [
-    "dependency-risk-review",
-    "Flag dependencies requiring manual security and maintenance review."
-  ],
-  [
-    "public-github-search",
-    "Search public GitHub repositories over HTTPS."
-  ],
-  [
-    "source-provenance",
-    "Record source URLs and versions for reused ideas."
-  ],
-  [
-    "license-compatibility",
-    "Require license review before adapting external code."
-  ],
-  [
-    "compatibility-check",
-    "Compare runtime and language requirements before adoption."
-  ],
-  [
-    "documentation-research",
-    "Find official documentation references for a task."
-  ],
-  [
-    "research-evidence-summary",
-    "Summarize sources with caveats and evidence."
-  ],
-  [
-    "prompt-budgeting",
-    "Keep model prompts concise and capped."
-  ],
-  [
-    "local-model-health",
-    "Check configured model and llama.cpp paths."
-  ],
-  [
-    "model-timeout",
-    "Bound local model execution time."
-  ],
-  [
-    "model-output-review",
-    "Treat generated text as untrusted and reviewable."
-  ],
-  [
-    "patch-generation",
-    "Request unified diff output instead of free-form write instructions."
-  ],
-  [
-    "patch-path-validation",
-    "Reject absolute paths and traversal in patch targets."
-  ],
-  [
-    "patch-target-preview",
-    "List patch targets before applying."
-  ],
-  [
-    "new-file-patch-review",
-    "Check creation patches and /dev/null handling."
-  ],
-  [
-    "delete-file-review",
-    "Require explicit review of file deletion proposals."
-  ],
-  [
-    "symlink-safety",
-    "Reject symlink targets and root escapes."
-  ],
-  [
-    "backup-existing-files",
-    "Back up existing files before an approved patch."
-  ],
-  [
-    "backup-collision-avoidance",
-    "Use unique backup identifiers to avoid overwrite."
-  ],
-  [
-    "git-apply-check",
-    "Validate patch applicability before mutation."
-  ],
-  [
-    "git-diff-check",
-    "Check whitespace and conflict markers after a patch."
-  ],
-  [
-    "human-approval-gate",
-    "Require explicit confirmation before project writes."
-  ],
-  [
-    "test-command-confirmation",
-    "Run only an exact user-entered test/build command."
-  ],
-  [
-    "test-timeout",
-    "Bound test execution and report timeout outcomes."
-  ],
-  [
-    "test-output-capture",
-    "Capture output as evidence, not as instructions."
-  ],
-  [
-    "test-result-verification",
-    "Use exit status and output to classify results."
-  ],
-  [
-    "build-command-suggestions",
-    "Suggest test/build commands from project markers."
-  ],
-  [
-    "python-test-adapter",
-    "Support unittest and pytest workflows."
-  ],
-  [
-    "android-gradle-adapter",
-    "Suggest Gradle test and debug build commands."
-  ],
-  [
-    "node-test-adapter",
-    "Suggest package-script-based tests when declared."
-  ],
-  [
-    "go-test-adapter",
-    "Suggest go test ./... when go.mod exists."
-  ],
-  [
-    "rust-test-adapter",
-    "Suggest cargo test when Cargo.toml exists."
-  ],
-  [
-    "make-test-adapter",
-    "Suggest Make targets only after inspecting the Makefile."
-  ],
-  [
-    "repair-diagnosis",
-    "Summarize failures from actual output and changed paths."
-  ],
-  [
-    "bounded-repair-loop",
-    "Cap repair proposals at three attempts."
-  ],
-  [
-    "repair-approval-per-attempt",
-    "Require approval for each proposed repair."
-  ],
-  [
-    "post-repair-verification",
-    "Re-run approved checks after a repair."
-  ],
-  [
-    "checkpoint-save",
-    "Save workflow phase and task metadata outside the project."
-  ],
-  [
-    "checkpoint-resume",
-    "Show saved state and require RESUME before continuing."
-  ],
-  [
-    "checkpoint-clear",
-    "Clear a project's saved checkpoint on request."
-  ],
-  [
-    "shared-install",
-    "Install the launcher and package in the user home directory."
-  ],
-  [
-    "global-command",
-    "Expose the ai command through a user-level PATH directory."
-  ],
-  [
-    "path-portability",
-    "Avoid hard-coded project directories in runtime logic."
-  ],
-  [
-    "posix-shell-compatibility",
-    "Keep installation shell syntax portable where practical."
-  ],
-  [
-    "python36-compatibility",
-    "Avoid syntax requiring newer Python than the target supports."
-  ],
-  [
-    "terminal-portability",
-    "Use portable filesystem and process interfaces where possible."
-  ],
-  [
-    "offline-first-mode",
-    "Keep local inspection and planning available offline."
-  ],
-  [
-    "network-timeout",
-    "Bound public API requests and report network errors."
-  ],
-  [
-    "github-rate-limit-awareness",
-    "Handle API limits and unavailable public search."
-  ],
-  [
-    "read-only-default",
-    "Prefer inspection and proposal over mutation."
-  ],
-  [
-    "tool-allowlist",
-    "Reject unknown workflow actions."
-  ],
-  [
-    "command-injection-boundary",
-    "Never pass model output to a shell."
-  ],
-  [
-    "project-root-guard",
-    "Ensure resolved paths remain under the selected root."
-  ],
-  [
-    "generated-directory-filter",
-    "Skip common build, dependency, and VCS directories."
-  ],
-  [
-    "file-size-limit",
-    "Skip oversized files during inventory."
-  ],
-  [
-    "supported-text-filter",
-    "Limit inventory to recognized source/config formats."
-  ],
-  [
-    "inventory-cap",
-    "Bound the number of listed files."
-  ],
-  [
-    "context-compression",
-    "Provide compact project context to the model."
-  ],
-  [
-    "requirement-checklist",
-    "Track requirements with pending/pass/fail evidence."
-  ],
-  [
-    "completeness-audit",
-    "Compare required paths to available paths."
-  ],
-  [
-    "ripple-history",
-    "Record bounded workflow attempts and outcomes."
-  ],
-  [
-    "result-contract",
-    "Report changed paths, checks, outcomes, and blockers."
-  ],
-  [
-    "no-false-success",
-    "Never claim execution or tests without evidence."
-  ],
-  [
-    "error-classification",
-    "Classify failures as configuration, test, build, or patch errors."
-  ],
-  [
-    "recovery-plan",
-    "Suggest safe next steps after a failed operation."
-  ],
-  [
-    "cancel-support",
-    "Respect blank or nonmatching confirmation input as cancellation."
-  ],
-  [
-    "user-override",
-    "Let the user cancel before any approved operation."
-  ],
-  [
-    "audit-summary",
-    "Summarize operations performed without storing secret content."
-  ],
-  [
-    "performance-budget",
-    "Cap files, output, model tokens, and network time."
-  ],
-  [
-    "memory-minimization",
-    "Store checkpoint metadata, not source code."
-  ],
-  [
-    "state-permissions",
-    "Restrict checkpoint files to user access where supported."
-  ],
-  [
-    "documentation-update",
-    "Keep architecture and status docs aligned with verified behavior."
-  ],
-  [
-    "ci-verification",
-    "Inspect automated test results before claiming CI passes."
-  ],
-  [
-    "device-verification",
-    "Separate CI evidence from AndroidIDE device evidence."
-  ],
-  [
-    "release-readiness",
-    "Check docs, tests, license, and known limitations before release."
-  ],
-  [
-    "skill-catalog-validation",
-    "Validate that the canonical skill catalog contains 100 unique IDs."
-  ],
-  [
-    "workflow-resume-safety",
-    "Resume only a known checkpoint after explicit confirmation."
-  ],
-  [
-    "multi-project-state-isolation",
-    "Separate checkpoints by canonical project root."
-  ],
-  [
-    "shared-state-outside-repo",
-    "Keep durable agent state outside project repositories."
-  ],
-  [
-    "privacy-safe-reporting",
-    "Avoid including secret values or full source contents in status output."
-  ]
+  {
+    "id": "project-inspection",
+    "description": "Inventory project files without reading excluded secrets."
+  },
+  {
+    "id": "git-status",
+    "description": "Summarize current branch, commit, and working-tree status."
+  },
+  {
+    "id": "stack-detection",
+    "description": "Infer languages and frameworks from project markers."
+  },
+  {
+    "id": "entry-point-discovery",
+    "description": "Identify likely application entry points from filenames and config."
+  },
+  {
+    "id": "dependency-map",
+    "description": "Map declared dependencies and package manifests."
+  },
+  {
+    "id": "build-system-detection",
+    "description": "Detect Gradle, Python, Node, Go, Rust, and Make projects."
+  },
+  {
+    "id": "test-discovery",
+    "description": "Find existing test directories and test configuration."
+  },
+  {
+    "id": "requirements-extraction",
+    "description": "Convert a request into explicit acceptance criteria."
+  },
+  {
+    "id": "task-decomposition",
+    "description": "Split a large request into small verifiable stages."
+  },
+  {
+    "id": "implementation-plan",
+    "description": "Produce an ordered implementation plan."
+  },
+  {
+    "id": "change-scope-control",
+    "description": "Keep proposed changes focused on the requested outcome."
+  },
+  {
+    "id": "risk-assessment",
+    "description": "Identify likely regressions and unsafe operations."
+  },
+  {
+    "id": "pre-edit-impact",
+    "description": "List related files before proposing changes."
+  },
+  {
+    "id": "android-link-map",
+    "description": "Surface likely Android manifest, resource, and Gradle relationships."
+  },
+  {
+    "id": "kotlin-file-map",
+    "description": "Locate Kotlin source and probable package structure."
+  },
+  {
+    "id": "java-file-map",
+    "description": "Locate Java source and probable package structure."
+  },
+  {
+    "id": "manifest-review",
+    "description": "Review AndroidManifest.xml for structural and permission concerns."
+  },
+  {
+    "id": "gradle-review",
+    "description": "Inspect Gradle files for configuration consistency."
+  },
+  {
+    "id": "resource-link-review",
+    "description": "Find likely XML/resource references by path and name."
+  },
+  {
+    "id": "api-contract-review",
+    "description": "Compare declared API inputs and outputs when files are available."
+  },
+  {
+    "id": "schema-review",
+    "description": "Review database schema changes for compatibility risks."
+  },
+  {
+    "id": "migration-review",
+    "description": "Review migration ordering and rollback considerations."
+  },
+  {
+    "id": "config-review",
+    "description": "Inspect configuration without exposing secret values."
+  },
+  {
+    "id": "secret-filename-filter",
+    "description": "Exclude common secret-bearing filenames from inventory."
+  },
+  {
+    "id": "secret-redaction",
+    "description": "Redact common token and password patterns from captured text."
+  },
+  {
+    "id": "license-identification",
+    "description": "Identify license files and declared dependency licenses."
+  },
+  {
+    "id": "dependency-risk-review",
+    "description": "Flag dependencies requiring manual security and maintenance review."
+  },
+  {
+    "id": "public-github-search",
+    "description": "Search public GitHub repositories over HTTPS."
+  },
+  {
+    "id": "source-provenance",
+    "description": "Record source URLs and versions for reused ideas."
+  },
+  {
+    "id": "license-compatibility",
+    "description": "Require license review before adapting external code."
+  },
+  {
+    "id": "compatibility-check",
+    "description": "Compare runtime and language requirements before adoption."
+  },
+  {
+    "id": "documentation-research",
+    "description": "Find official documentation references for a task."
+  },
+  {
+    "id": "research-evidence-summary",
+    "description": "Summarize sources with caveats and evidence."
+  },
+  {
+    "id": "prompt-budgeting",
+    "description": "Keep model prompts concise and capped."
+  },
+  {
+    "id": "local-model-health",
+    "description": "Check configured model and llama.cpp paths."
+  },
+  {
+    "id": "model-timeout",
+    "description": "Bound local model execution time."
+  },
+  {
+    "id": "model-output-review",
+    "description": "Treat generated text as untrusted and reviewable."
+  },
+  {
+    "id": "patch-generation",
+    "description": "Request unified diff output instead of free-form write instructions."
+  },
+  {
+    "id": "patch-path-validation",
+    "description": "Reject absolute paths and traversal in patch targets."
+  },
+  {
+    "id": "patch-target-preview",
+    "description": "List patch targets before applying."
+  },
+  {
+    "id": "new-file-patch-review",
+    "description": "Check creation patches and /dev/null handling."
+  },
+  {
+    "id": "delete-file-review",
+    "description": "Require explicit review of file deletion proposals."
+  },
+  {
+    "id": "symlink-safety",
+    "description": "Reject symlink targets and root escapes."
+  },
+  {
+    "id": "backup-existing-files",
+    "description": "Back up existing files before an approved patch."
+  },
+  {
+    "id": "backup-collision-avoidance",
+    "description": "Use unique backup identifiers to avoid overwrite."
+  },
+  {
+    "id": "git-apply-check",
+    "description": "Validate patch applicability before mutation."
+  },
+  {
+    "id": "git-diff-check",
+    "description": "Check whitespace and conflict markers after a patch."
+  },
+  {
+    "id": "human-approval-gate",
+    "description": "Require explicit confirmation before project writes."
+  },
+  {
+    "id": "test-command-confirmation",
+    "description": "Run only an exact user-entered test/build command."
+  },
+  {
+    "id": "test-timeout",
+    "description": "Bound test execution and report timeout outcomes."
+  },
+  {
+    "id": "test-output-capture",
+    "description": "Capture output as evidence, not as instructions."
+  },
+  {
+    "id": "test-result-verification",
+    "description": "Use exit status and output to classify results."
+  },
+  {
+    "id": "build-command-suggestions",
+    "description": "Suggest test/build commands from project markers."
+  },
+  {
+    "id": "python-test-adapter",
+    "description": "Support unittest and pytest workflows."
+  },
+  {
+    "id": "android-gradle-adapter",
+    "description": "Suggest Gradle test and debug build commands."
+  },
+  {
+    "id": "node-test-adapter",
+    "description": "Suggest package-script-based tests when declared."
+  },
+  {
+    "id": "go-test-adapter",
+    "description": "Suggest go test ./... when go.mod exists."
+  },
+  {
+    "id": "rust-test-adapter",
+    "description": "Suggest cargo test when Cargo.toml exists."
+  },
+  {
+    "id": "make-test-adapter",
+    "description": "Suggest Make targets only after inspecting the Makefile."
+  },
+  {
+    "id": "repair-diagnosis",
+    "description": "Summarize failures from actual output and changed paths."
+  },
+  {
+    "id": "bounded-repair-loop",
+    "description": "Cap repair proposals at three attempts."
+  },
+  {
+    "id": "repair-approval-per-attempt",
+    "description": "Require approval for each proposed repair."
+  },
+  {
+    "id": "post-repair-verification",
+    "description": "Re-run approved checks after a repair."
+  },
+  {
+    "id": "checkpoint-save",
+    "description": "Save workflow phase and task metadata outside the project."
+  },
+  {
+    "id": "checkpoint-resume",
+    "description": "Show saved state and require RESUME before continuing."
+  },
+  {
+    "id": "checkpoint-clear",
+    "description": "Clear a project's saved checkpoint on request."
+  },
+  {
+    "id": "shared-install",
+    "description": "Install the launcher and package in the user home directory."
+  },
+  {
+    "id": "global-command",
+    "description": "Expose the ai command through a user-level PATH directory."
+  },
+  {
+    "id": "path-portability",
+    "description": "Avoid hard-coded project directories in runtime logic."
+  },
+  {
+    "id": "posix-shell-compatibility",
+    "description": "Keep installation shell syntax portable where practical."
+  },
+  {
+    "id": "python36-compatibility",
+    "description": "Avoid syntax requiring newer Python than the target supports."
+  },
+  {
+    "id": "terminal-portability",
+    "description": "Use portable filesystem and process interfaces where possible."
+  },
+  {
+    "id": "offline-first-mode",
+    "description": "Keep local inspection and planning available offline."
+  },
+  {
+    "id": "network-timeout",
+    "description": "Bound public API requests and report network errors."
+  },
+  {
+    "id": "github-rate-limit-awareness",
+    "description": "Handle API limits and unavailable public search."
+  },
+  {
+    "id": "read-only-default",
+    "description": "Prefer inspection and proposal over mutation."
+  },
+  {
+    "id": "tool-allowlist",
+    "description": "Reject unknown workflow actions."
+  },
+  {
+    "id": "command-injection-boundary",
+    "description": "Never pass model output to a shell."
+  },
+  {
+    "id": "project-root-guard",
+    "description": "Ensure resolved paths remain under the selected root."
+  },
+  {
+    "id": "generated-directory-filter",
+    "description": "Skip common build, dependency, and VCS directories."
+  },
+  {
+    "id": "file-size-limit",
+    "description": "Skip oversized files during inventory."
+  },
+  {
+    "id": "supported-text-filter",
+    "description": "Limit inventory to recognized source/config formats."
+  },
+  {
+    "id": "inventory-cap",
+    "description": "Bound the number of listed files."
+  },
+  {
+    "id": "context-compression",
+    "description": "Provide compact project context to the model."
+  },
+  {
+    "id": "requirement-checklist",
+    "description": "Track requirements with pending/pass/fail evidence."
+  },
+  {
+    "id": "completeness-audit",
+    "description": "Compare required paths to available paths."
+  },
+  {
+    "id": "ripple-history",
+    "description": "Record bounded workflow attempts and outcomes."
+  },
+  {
+    "id": "result-contract",
+    "description": "Report changed paths, checks, outcomes, and blockers."
+  },
+  {
+    "id": "no-false-success",
+    "description": "Never claim execution or tests without evidence."
+  },
+  {
+    "id": "error-classification",
+    "description": "Classify failures as configuration, test, build, or patch errors."
+  },
+  {
+    "id": "recovery-plan",
+    "description": "Suggest safe next steps after a failed operation."
+  },
+  {
+    "id": "cancel-support",
+    "description": "Respect blank or nonmatching confirmation input as cancellation."
+  },
+  {
+    "id": "user-override",
+    "description": "Let the user cancel before any approved operation."
+  },
+  {
+    "id": "audit-summary",
+    "description": "Summarize operations performed without storing secret content."
+  },
+  {
+    "id": "performance-budget",
+    "description": "Cap files, output, model tokens, and network time."
+  },
+  {
+    "id": "memory-minimization",
+    "description": "Store checkpoint metadata, not source code."
+  },
+  {
+    "id": "state-permissions",
+    "description": "Restrict checkpoint files to user access where supported."
+  },
+  {
+    "id": "documentation-update",
+    "description": "Keep architecture and status docs aligned with verified behavior."
+  },
+  {
+    "id": "ci-verification",
+    "description": "Inspect automated test results before claiming CI passes."
+  },
+  {
+    "id": "device-verification",
+    "description": "Separate CI evidence from AndroidIDE device evidence."
+  },
+  {
+    "id": "release-readiness",
+    "description": "Check docs, tests, license, and known limitations before release."
+  },
+  {
+    "id": "skill-catalog-validation",
+    "description": "Validate that the canonical skill catalog contains 100 unique IDs."
+  },
+  {
+    "id": "workflow-resume-safety",
+    "description": "Resume only a known checkpoint after explicit confirmation."
+  },
+  {
+    "id": "multi-project-state-isolation",
+    "description": "Separate checkpoints by canonical project root."
+  },
+  {
+    "id": "shared-state-outside-repo",
+    "description": "Keep durable agent state outside project repositories."
+  },
+  {
+    "id": "privacy-safe-reporting",
+    "description": "Avoid including secret values or full source contents in status output."
+  }
 ]
