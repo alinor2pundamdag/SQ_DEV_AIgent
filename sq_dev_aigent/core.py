@@ -137,6 +137,8 @@ def patch_paths(patch_text):
             value = line[4:].split("\t", 1)[0].strip()
             if value == "/dev/null":
                 continue
+            if value.startswith('"') or value.endswith('"'):
+                raise ValueError("Quoted patch paths are unsupported; use simple relative paths.")
             if value.startswith("a/") or value.startswith("b/"):
                 value = value[2:]
             paths.append(value)
