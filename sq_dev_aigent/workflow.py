@@ -3,7 +3,7 @@ import os
 import re
 import subprocess
 import time
-from .core import inspect_project, project_files, run_local_model, patch_paths, validate_patch_paths, apply_patch
+from .core import inspect_project, project_files, run_local_model, patch_paths, validate_patch_paths, apply_patch, TEXT_EXTS
 from .systems import (IntentInterpreter, CheckpointStore, RequirementChecklist,
                       PreEditImpactCheck, AndroidLinkMap, RippleLoop, SecurityGuard,
                       BuildManager, ResultVerifier)
@@ -58,6 +58,34 @@ def _run_approved_test(command, root):
     print(output[-12000:] if output else "(No output captured.)")
     return ResultVerifier.verify(code, output)
 
+def _safe_source_context(root, paths, max_total=30000):
+    parts = []
+    total = 0
+    secret_names = (".env", "credentials.json", "secrets.json", "id_rsa", "id_ed25519",
+                    "keystore", "service-account", "token")
+    for rel in paths[:30]:
+        base = os.path.basename(rel).lower()
+        if any(term in base for term in secret_names):
+            continue
+        full = os.path.realpath(os.path.join(root, rel))
+        if not full.startswith(root + os.sep) or not os.path.isfile(full) or os.path.islink(full):
+            continue
+        try:
+            with open(full, "rb") as stream:
+                raw = stream.read(3001)
+            if len(raw) > 3000 or b"\\x00" in raw:
+                continue
+            text = raw.decode("utf-8", "replace")
+        except (IOError, OSError):
+            continue
+        text = SecurityGuard.redact(text)
+        chunk = "\\n### FILE: " + rel + " ###\\n" + text
+        if total + len(chunk) > max_total:
+            break
+        parts.append(chunk)
+        total += len(chunk)
+    return "\\n".join(parts)
+
 def run_workflow(goal, root="."):
     root = os.path.realpath(os.path.abspath(root))
     if not os.path.isdir(root):
@@ -66,6 +94,7 @@ def run_workflow(goal, root="."):
     store = CheckpointStore()
     inventory_text = inspect_project(root)
     known_files = project_files(root)
+    source_context = _safe_source_context(root, known_files)
     requirements = RequirementChecklist([
         "Task interpreted and project inspected",
         "Patch reviewed and explicitly approved",
@@ -110,13 +139,10 @@ def run_workflow(goal, root="."):
         for path in paths:
             print("  " + path)
         print("Patch saved outside the project: " + patch_file)
-        print("Review the patch before applying it. The agent will not apply model output without approval.")
-        answer = input("Type APPLY to apply this proposal, anything else cancels: ").strip()
-        if answer != "APPLY":
-            print("Cancelled; proposal was not applied.")
-            store.save(root, intent["goal"], "cancelled", {"attempt": attempt, "patch_file": patch_file})
-            return 0
-        # apply_patch has its own confirmation prompt by design.
+        print("\\n===== PROPOSED DIFF (review before approval) =====")
+        print(patch_text[:12000])
+        print("===== END PROPOSED DIFF =====")
+        # apply_patch is the single approval gate and requires the exact word APPLY.
         result = apply_patch(patch_file, root)
         if result != 0:
             loop.record(attempt, "apply", "Patch application failed with exit code {0}".format(result))
