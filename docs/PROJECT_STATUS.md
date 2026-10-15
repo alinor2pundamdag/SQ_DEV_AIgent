@@ -33,11 +33,10 @@ Last updated: 2026-10-15
   - llama.cpp: `/home/test/sq-dev-ai/runtime/llama.cpp-source/build/bin/llama-completion`
 - Local model CLI flags and Python 3.6.9 behavior still require on-device confirmation.
 - Android Link Map is heuristic, not a full dependency/semantic index.
-- Public research is GitHub repository search, not general internet search.
+- Research supports GitHub repository search, public web snippets, and filtering to an allowlist of official documentation hosts. Full-page source, version, compatibility, and license verification is not automated.
 
 ## Next acceptance gates
-1. Inspect latest GitHub Actions run and fix any failing step.
-2. Confirm 100-skill and installer smoke tests pass.
-3. Test in AndroidIDE with the existing Python 3.6.9 runtime and installed llama.cpp binary.
-4. Run the workflow on a disposable Git repository and verify apply, backup, test failure, bounded repair, resume, and cancellation behavior.
-5. Update this file only with actual observed results.
+1. Re-run CI against the current main-branch implementation after the latest code changes.
+2. Test in AndroidIDE with the existing Python 3.6.9 runtime and installed llama.cpp binary.
+3. Run the workflow on a disposable Git repository and verify apply, backup, test failure, bounded repair, resume, and cancellation behavior.
+4. Update this file only with actual observed results.
