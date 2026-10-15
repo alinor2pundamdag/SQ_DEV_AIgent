@@ -79,12 +79,16 @@ def main():
         if args.command == "research":
             print(research_github(" ".join(args.query), args.limit)); return 0
         if args.command == "diff":
-            root = validate_patch_paths(args.root, patch_paths(open(args.patch_file, "r").read()))
+            with open(args.patch_file, "r") as stream:
+                patch_text = stream.read()
+            root = validate_patch_paths(args.root, patch_paths(patch_text))
             print("Selected root: " + root)
             print("Patch paths:")
-            for item in patch_paths(open(args.patch_file, "r").read()):
+            for item in patch_paths(patch_text):
                 print("  " + item)
-            print("Review the patch contents manually; this command does not apply it.")
+            print("\\nPatch preview (first 12000 characters):")
+            print(patch_text[:12000])
+            print("Review only; this command does not apply it.")
             return 0
         if args.command == "apply":
             return apply_patch(args.patch_file, args.root)
