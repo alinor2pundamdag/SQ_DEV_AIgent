@@ -21,7 +21,7 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(patch_paths(delete_patch), ["src/old.py"])
 
     def test_reject_quoted_patch_paths(self):
-        patch = '--- "a/file name.txt"\\n+++ "b/file name.txt"\\n'
+        patch = '--- "a/file name.txt"\n+++ "b/file name.txt"\n'
         with self.assertRaises(ValueError):
             patch_paths(patch)
 
@@ -72,15 +72,15 @@ class CoreTests(unittest.TestCase):
             subprocess.check_call(["git", "init", root], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             target = os.path.join(root, "file.txt")
             with open(target, "w") as stream:
-                stream.write("before\\n")
+                stream.write("before\n")
             patch_file = os.path.join(temp, "change.patch")
             with open(patch_file, "w") as stream:
-                stream.write("--- a/file.txt\\n+++ b/file.txt\\n@@ -1 +1 @@\\n-before\\n+after\\n")
+                stream.write("--- a/file.txt\n+++ b/file.txt\n@@ -1 +1 @@\n-before\n+after\n")
             with mock_patch("builtins.input", return_value="APPLY"):
                 from sq_dev_aigent.core import apply_patch
                 self.assertEqual(apply_patch(patch_file, root), 0)
             with open(target, "r") as stream:
-                self.assertEqual(stream.read(), "after\\n")
+                self.assertEqual(stream.read(), "after\n")
             backup_root = os.path.join(root, ".sqai-backups")
             self.assertTrue(os.path.isdir(backup_root))
             backup_files = []
