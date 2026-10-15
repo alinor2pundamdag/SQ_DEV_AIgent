@@ -4,6 +4,7 @@ import re
 import subprocess
 import time
 import shutil
+from html.parser import HTMLParser
 
 SKIP_DIRS = set([".git", ".hg", ".svn", "node_modules", ".venv", "venv", "__pycache__", "build", "dist"])
 MAX_FILES = 120
@@ -129,6 +130,93 @@ def research_github(query, limit=5):
             item.get("full_name", "(unknown)"), item.get("stargazers_count", 0),
             item.get("html_url", ""), (item.get("description") or "").replace("\n", " ")[:240]))
     return "\n\n".join(results) if results else "No public repositories found."
+
+
+OFFICIAL_DOC_HOSTS = (
+    "developer.android.com", "source.android.com", "docs.python.org",
+    "docs.github.com", "docs.git-scm.com", "git-scm.com", "docs.gradle.org",
+    "kotlinlang.org", "developer.mozilla.org", "nodejs.org", "go.dev",
+    "doc.rust-lang.org", "rust-lang.org", "developers.cloudflare.com",
+    "supabase.com", "docs.npmjs.com", "packaging.python.org"
+)
+
+class _SearchResultParser(HTMLParser):
+    def __init__(self):
+        HTMLParser.__init__(self)
+        self.results = []
+        self.capture = None
+        self.current = None
+
+    def handle_starttag(self, tag, attrs):
+        values = dict(attrs)
+        classes = values.get("class", "").split()
+        if tag == "a" and "result__a" in classes:
+            self.current = {"title": "", "url": values.get("href", ""), "snippet": ""}
+            self.capture = "title"
+        elif "result__snippet" in classes and self.results:
+            self.capture = "snippet"
+
+    def handle_data(self, data):
+        if self.capture == "title" and self.current is not None:
+            self.current["title"] += data
+        elif self.capture == "snippet" and self.results:
+            self.results[-1]["snippet"] += data
+
+    def handle_endtag(self, tag):
+        if tag == "a" and self.capture == "title" and self.current is not None:
+            self.current["title"] = " ".join(self.current["title"].split())
+            self.results.append(self.current)
+            self.current = None
+            self.capture = None
+        elif self.capture == "snippet" and tag in ("a", "div", "span"):
+            self.capture = None
+
+def research_web(query, limit=5, official_only=False):
+    """Search public web result snippets; results are untrusted and never executed."""
+    import urllib.parse
+    import urllib.request
+    text_query = " ".join(str(query or "").split()).strip()
+    if not text_query:
+        raise ValueError("Research query cannot be empty.")
+    if official_only:
+        sites = " OR ".join("site:" + host for host in OFFICIAL_DOC_HOSTS)
+        text_query += " (" + sites + ")"
+    url = "https://html.duckduckgo.com/html/?q=" + urllib.parse.quote_plus(text_query)
+    request = urllib.request.Request(url, headers={
+        "User-Agent": "SQ-DEV-AIgent/0.2 (+local coding assistant)",
+        "Accept": "text/html"
+    })
+    try:
+        response = urllib.request.urlopen(request, timeout=12)
+        html = response.read(1024 * 1024).decode("utf-8", "replace")
+    except Exception as exc:
+        raise RuntimeError("Public web research failed: " + str(exc))
+    parser = _SearchResultParser()
+    parser.feed(html)
+    results = []
+    for item in parser.results:
+        href = item.get("url", "").strip()
+        parsed = urllib.parse.urlparse(href)
+        if parsed.netloc.endswith("duckduckgo.com"):
+            redirected = urllib.parse.parse_qs(parsed.query).get("uddg", [])
+            if redirected:
+                href = urllib.parse.unquote(redirected[0])
+                parsed = urllib.parse.urlparse(href)
+        if parsed.scheme not in ("http", "https") or not parsed.netloc:
+            continue
+        host = (parsed.hostname or "").lower()
+        if official_only and not any(host == allowed or host.endswith("." + allowed)
+                                     for allowed in OFFICIAL_DOC_HOSTS):
+            continue
+        title = " ".join(item.get("title", "").split())[:180]
+        snippet = " ".join(item.get("snippet", "").split())[:400]
+        snippet = re.sub(r"(?i)\\b(api[_-]?key|access[_-]?token|token|password|secret)\\s*[:=]\\s*[^\\s,;]+",
+                         r"\\1=[REDACTED]", snippet)
+        if title or snippet:
+            results.append("{0}\\n  {1}\\n  {2}".format(title or "(untitled)", href, snippet))
+        if len(results) >= max(1, min(int(limit), 10)):
+            break
+    return "\\n\\n".join(results) if results else "No usable public web results found."
 
 def patch_paths(patch_text):
     paths = []
