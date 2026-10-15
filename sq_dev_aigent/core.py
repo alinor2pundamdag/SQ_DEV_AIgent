@@ -210,13 +210,13 @@ def research_web(query, limit=5, official_only=False):
             continue
         title = " ".join(item.get("title", "").split())[:180]
         snippet = " ".join(item.get("snippet", "").split())[:400]
-        snippet = re.sub(r"(?i)\\b(api[_-]?key|access[_-]?token|token|password|secret)\\s*[:=]\\s*[^\\s,;]+",
-                         r"\\1=[REDACTED]", snippet)
+        snippet = re.sub(r"(?i)\b(api[_-]?key|access[_-]?token|token|password|secret)\s*[:=]\s*[^\s,;]+",
+                         r"\1=[REDACTED]", snippet)
         if title or snippet:
-            results.append("{0}\\n  {1}\\n  {2}".format(title or "(untitled)", href, snippet))
+            results.append("{0}\n  {1}\n  {2}".format(title or "(untitled)", href, snippet))
         if len(results) >= max(1, min(int(limit), 10)):
             break
-    return "\\n\\n".join(results) if results else "No usable public web results found."
+    return "\n\n".join(results) if results else "No usable public web results found."
 
 def patch_paths(patch_text):
     paths = []
