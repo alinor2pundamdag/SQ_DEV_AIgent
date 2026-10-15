@@ -86,7 +86,7 @@ def main():
             print("Patch paths:")
             for item in patch_paths(patch_text):
                 print("  " + item)
-            print("\\nPatch preview (first 12000 characters):")
+            print("\nPatch preview (first 12000 characters):")
             print(patch_text[:12000])
             print("Review only; this command does not apply it.")
             return 0
@@ -100,7 +100,7 @@ def main():
             print("12 CORE SYSTEMS:")
             for name in CORE_SYSTEMS:
                 print("  " + name)
-            print("\\n7 LINKED-FILE SYSTEMS:")
+            print("\n7 LINKED-FILE SYSTEMS:")
             for name in LINKED_FILE_SYSTEMS:
                 print("  " + name)
             return 0
