@@ -46,7 +46,8 @@ def _safe_source_context(root, paths, max_total=30000):
     parts = []
     total = 0
     secret_names = (".env", "credentials.json", "secrets.json", "id_rsa", "id_ed25519",
-                    "keystore", "service-account", "token")
+                    "keystore", "service-account", "token", "secret", "credential",
+                    "private", "password", "authorization", ".pem", ".p12", ".jks", ".key")
     for rel in paths[:30]:
         base = os.path.basename(rel).lower()
         if any(term in base for term in secret_names):
