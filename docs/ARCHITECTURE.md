@@ -2,7 +2,7 @@
 
 ## Runtime components
 - `cli.py`: command parsing and user-visible operations.
-- `core.py`: project inventory, local model invocation, public GitHub search, patch validation/preflight, backups, and supervised patch application.
+- `core.py`: project inventory, local model invocation, public GitHub search, public web/official-documentation search, patch validation/preflight, backups, and supervised patch application.
 - `systems.py`: the 12 named core systems, 7 linked-file helpers, security redaction, requirement checklist, and shared checkpoints.
 - `workflow.py`: bounded task → proposal → human approval → test → diagnosis loop; no more than three proposals.
 - `skills/catalog.json`: canonical 100-skill catalog.
@@ -24,7 +24,7 @@ The CLI expects an executable compatible with `llama-completion -m MODEL -p PROM
 
 ## Deliberate limitations
 - The Android link map uses filename heuristics, not full IDE semantic indexing.
-- GitHub research searches public repositories; it is not a general web search engine.
+- Web research returns public search-result snippets; it does not itself verify the full source page, license, or version compatibility. Treat results as untrusted.
 - Resume restarts a saved task after confirmation; it does not replay arbitrary shell history.
 - No unattended code changes, automatic dependency installation, deployment, APK installation, secret retrieval, or unbounded repair loops.
 - CI success does not establish AndroidIDE device compatibility. Device-side tests remain a separate acceptance gate.
