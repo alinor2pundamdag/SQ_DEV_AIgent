@@ -41,16 +41,23 @@ def _run_approved_test(command, root):
     try:
         output = process.communicate(timeout=900)[0]
         code = process.returncode
-    except TypeError:
-        # Compatibility fallback for older interpreters.
+    except subprocess.TimeoutExpired:
+        try:
+            process.kill()
+        except Exception:
+            pass
         output = process.communicate()[0]
-        code = process.returncode
+        code = 124
     except Exception as exc:
         try:
             process.kill()
         except Exception:
             pass
-        output = ("Test/build command timed out or failed to finish: " + str(exc)).encode("utf-8")
+        try:
+            output = process.communicate()[0]
+        except Exception:
+            output = b""
+        output += ("Test/build command failed to finish: " + str(exc)).encode("utf-8")
         code = 124
     if not isinstance(output, str):
         output = output.decode("utf-8", "replace")
