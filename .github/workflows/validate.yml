@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.11"]
+        python-version: ["3.6.15", "3.8", "3.11"]
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -24,7 +24,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Compile Python modules
-        run: python -m py_compile sq_dev_aigent/__init__.py sq_dev_aigent/core.py sq_dev_aigent/cli.py
+        run: python -m py_compile sq_dev_aigent/__init__.py sq_dev_aigent/core.py sq_dev_aigent/cli.py sq_dev_aigent/systems.py sq_dev_aigent/workflow.py
       - name: Run unit tests
         run: python -m unittest discover -s tests -v
       - name: Validate 100-skill catalog
