@@ -5,7 +5,7 @@ import shutil
 import subprocess
 import sys
 from . import __version__
-from .core import inspect_project, make_plan, run_local_model, research_github, patch_paths, validate_patch_paths, apply_patch
+from .core import inspect_project, make_plan, run_local_model, research_github, research_web, patch_paths, validate_patch_paths, apply_patch
 from .systems import CORE_SYSTEMS, LINKED_FILE_SYSTEMS, CheckpointStore, SecurityGuard, AutoContinue
 from .workflow import run_workflow
 
@@ -58,6 +58,8 @@ def main():
     research = sub.add_parser("research")
     research.add_argument("query", nargs="+")
     research.add_argument("--limit", type=int, default=5)
+    research.add_argument("--web", action="store_true", help="search public web snippets")
+    research.add_argument("--official", action="store_true", help="restrict web search to official documentation hosts")
     diff = sub.add_parser("diff")
     diff.add_argument("patch_file")
     diff.add_argument("--root", default=".")
@@ -84,7 +86,14 @@ def main():
         if args.command == "ask":
             print(run_local_model("Answer as a careful coding assistant. Never claim to have executed commands. User question: " + " ".join(args.question), 700)); return 0
         if args.command == "research":
-            print(research_github(" ".join(args.query), args.limit)); return 0
+            query = " ".join(args.query)
+            if args.official:
+                print(research_web(query, args.limit, official_only=True))
+            elif args.web:
+                print(research_web(query, args.limit, official_only=False))
+            else:
+                print(research_github(query, args.limit))
+            return 0
         if args.command == "diff":
             with open(args.patch_file, "r") as stream:
                 patch_text = stream.read()
