@@ -93,10 +93,12 @@ class CheckpointStore(object):
         return False
 
 class SecurityGuard(object):
-    """Central conservative checks used by workflow features."""
+    """Redact common credentials and enforce project-root boundaries."""
     SECRET_PATTERNS = (
-        re.compile(r"(?i)(api[_-]?key|access[_-]?token|password|secret)\s*[:=]\s*[^\s,;]+"),
-        re.compile(r"(?i)bearer\s+[A-Za-z0-9._~+/-]+=*")
+        re.compile(r"(?i)\\b[\\w.-]*(?:API[_-]?KEY|ACCESS[_-]?TOKEN|TOKEN|PASSWORD|PASSWD|SECRET|CREDENTIAL|PRIVATE[_-]?KEY|AUTHORIZATION)[\\w.-]*\\b\\s*[:=]\\s*['\\\"]?[^\\s,'\\\";]+['\\\"]?"),
+        re.compile(r"(?i)\\b(?:gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9]{20,})\\b"),
+        re.compile(r"(?i)\\bBearer\\s+[A-Za-z0-9._~+/-]+=*"),
+        re.compile(r"-----BEGIN [^-]*PRIVATE KEY-----.*?-----END [^-]*PRIVATE KEY-----", re.S)
     )
 
     @classmethod
