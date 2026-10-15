@@ -4,7 +4,7 @@ import tempfile
 import unittest
 import subprocess
 from unittest.mock import patch as mock_patch
-from sq_dev_aigent.core import patch_paths, validate_patch_paths, project_files, safe_root
+from sq_dev_aigent.core import patch_paths, validate_patch_paths, project_files, safe_root, _SearchResultParser
 from sq_dev_aigent.systems import (CheckpointStore, SecurityGuard, RippleLoop,
                                    RequirementChecklist, CORE_SYSTEMS, LINKED_FILE_SYSTEMS,
                                    AutoContinue)
@@ -121,6 +121,14 @@ class CoreTests(unittest.TestCase):
     def test_expected_system_counts(self):
         self.assertEqual(len(CORE_SYSTEMS), 12)
         self.assertEqual(len(LINKED_FILE_SYSTEMS), 7)
+
+    def test_public_search_result_parser(self):
+        parser = _SearchResultParser()
+        parser.feed('<a class="result__a" href="https://docs.python.org/">Python Docs</a>')
+        parser.feed('<a class="result__snippet" href="https://docs.python.org/">Official Python reference</a>')
+        self.assertEqual(parser.results[0]["title"], "Python Docs")
+        self.assertIn("docs.python.org", parser.results[0]["url"])
+        self.assertIn("Official Python reference", parser.results[0]["snippet"])
 
     def test_catalog_has_100_unique_skills(self):
         path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "skills", "catalog.json")
