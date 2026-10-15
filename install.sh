@@ -6,7 +6,7 @@ mkdir -p "$BIN_DIR"
 LAUNCHER="$BIN_DIR/ai"
 cat > "$LAUNCHER" <<EOF
 #!/bin/sh
-PYTHONPATH="$ROOT${PYTHONPATH:+:\$PYTHONPATH}" exec python -m sq_dev_aigent.cli "\$@"
+PYTHONPATH="$ROOT\${PYTHONPATH:+:\$PYTHONPATH}" exec python -m sq_dev_aigent.cli "\$@"
 EOF
 chmod 755 "$LAUNCHER"
 echo "Installed launcher: $LAUNCHER"
