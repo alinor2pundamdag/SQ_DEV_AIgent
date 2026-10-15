@@ -191,6 +191,12 @@ def apply_patch(path, root="."):
         raise RuntimeError("Git is required for applying unified diffs.")
     if not git_output(root, ["rev-parse", "--show-toplevel"]):
         raise RuntimeError("Selected project root is not inside a Git repository. Refusing to apply.")
+    check = subprocess.Popen(["git", "apply", "--check", patch_file], cwd=root,
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    check_out, check_err = check.communicate()
+    if check.returncode != 0:
+        detail = check_err.decode("utf-8", "replace")[-2000:]
+        raise RuntimeError("Patch does not apply cleanly; no files changed: " + detail)
     print("Patch targets:")
     for rel in paths:
         print("  " + rel)
