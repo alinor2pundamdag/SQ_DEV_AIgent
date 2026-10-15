@@ -24,6 +24,10 @@ def shared_state_dir():
     path = os.path.realpath(os.path.abspath(base))
     if not os.path.isdir(path):
         os.makedirs(path)
+    try:
+        os.chmod(path, 0o700)
+    except OSError:
+        pass
     return path
 
 def _safe_key(value):
@@ -37,6 +41,10 @@ class CheckpointStore(object):
         self.checkpoint_dir = os.path.join(self.base_dir, "checkpoints")
         if not os.path.isdir(self.checkpoint_dir):
             os.makedirs(self.checkpoint_dir)
+        try:
+            os.chmod(self.checkpoint_dir, 0o700)
+        except OSError:
+            pass
 
     def _path(self, project_root):
         root = os.path.realpath(os.path.abspath(project_root))
