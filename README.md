@@ -1,55 +1,62 @@
 # SQ_DEV_AIgent
 
-Local-first AI coding assistant for AndroidIDE Terminal, designed to use a local Qwen2.5-Coder GGUF model through llama.cpp and expose a global `ai` command.
+Local-first coding assistant for AndroidIDE Terminal, designed around a local Qwen2.5-Coder GGUF model through llama.cpp and a global `ai` command. The shared install and checkpoint memory live in the user's home directory, so the launcher can be used across project folders and does not depend on the original checkout remaining in place.
 
-## Implemented in this foundation
-- `ai doctor`: inspect runtime configuration.
+## Current capabilities
+- `ai doctor`: inspect Python, Git, and local model configuration.
 - `ai inspect [path]`: read-only project inventory and Git summary.
 - `ai plan [path]`: request a plan from the local model, with a safe fallback checklist.
 - `ai ask <question>`: ask the configured local model.
-- `ai research <query>`: search public GitHub repositories using HTTPS.
-- `ai diff <patch-file>`: validate paths and list patch targets without applying changes.
-- `ai apply <patch-file>`: validate paths, back up existing target files, and apply only after typing `APPLY`.
+- `ai research <query>`: search public GitHub repositories over HTTPS.
+- `ai diff <patch-file> --root <project>`: validate patch paths and show a preview.
+- `ai apply <patch-file> --root <project>`: preflight a patch, show targets, back up existing files, and apply only after typing `APPLY`.
 - `ai test`: run a user-entered test/build command only after typing `RUN`.
+- `ai workflow <goal> --root <project>`: bounded proposal → approval → test → diagnosis workflow; maximum three proposals, each patch is individually approved.
+- `ai resume --root <project>`: inspect a saved checkpoint and restart the task only after typing `RESUME`.
+- `ai systems`: list the 12 core systems and 7 linked-file systems.
+- `ai skills`: validate the canonical catalog of 100 unique skills; `ai skills --list` lists them.
 
-This is a supervised foundation, not yet a fully autonomous self-healing agent. Device-side compatibility and end-to-end tests are still pending.
+This is an approval-gated coding assistant, not an unattended self-modifying agent. Model-generated shell commands are never executed. Test/build commands must be typed and approved by the user. Model output, repository text, and test output are treated as untrusted data.
 
 ## Requirements
-- Python 3.6+ (standard library only)
-- Git (required for applying patches; optional for inspection)
-- llama.cpp `llama-completion` (optional, for local model use)
-- A local GGUF model file (optional)
+- Python 3.6+ standard library
+- Git (required for patch preflight/application; optional for inspection)
+- llama.cpp executable compatible with `llama-completion` flags (optional)
+- Local GGUF model file (optional)
 
-## Quick start
-From the repository directory:
+## Install a shared, persistent copy
+From the repository checkout:
 ```sh
 sh install.sh
 ai doctor
+ai systems
+ai skills
 ai inspect .
-ai plan .
-ai ask "Explain the current project structure"
 ```
-The installer adds a launcher to `~/.local/bin/ai`. If that directory is not on PATH, add it to your shell PATH. Installation does not download models or change project files.
+The installer copies the package and skill catalog to `~/.local/share/sq-dev-aigent/app` and installs `~/.local/bin/ai`. The command therefore remains available if the original checkout is moved or removed. If `~/.local/bin` is not on PATH, add it to the shell profile used by AndroidIDE Terminal.
 
-## Configure the model
+## Configure the local model
 ```sh
 export SQAI_MODEL="$HOME/sq-dev-ai/models/qwen2.5-coder-3b-instruct-q4_k_m.gguf"
 export SQAI_LLAMA="$HOME/sq-dev-ai/runtime/llama.cpp-source/build/bin/llama-completion"
 ```
-Persist these exports in the shell profile used by AndroidIDE Terminal if desired. Never put secrets, access tokens, or model weights in this repository.
+Persist these exports in the AndroidIDE Terminal shell profile if desired. Verify paths and CLI flags on the device before relying on model features. Never commit model weights, credentials, or private project data.
 
-## Safety
-- Model-generated text is never executed as a shell command.
-- Code changes must be provided as a unified diff and require explicit confirmation.
-- Patch paths reject absolute paths and parent traversal; symlink targets are rejected.
-- Existing files touched by a patch are backed up under `.sqai-backups/<timestamp>/`.
-- Test/build commands are selected by the user and require confirmation.
-- No automatic package installation, deployment, APK installation, or unbounded repair attempts.
-
-## Development
+## Safe workflow example
 ```sh
-python -m unittest discover -s tests -v
-python -m py_compile sq_dev_aigent/*.py
+ai inspect .
+ai plan .
+ai workflow "Fix the failing tests without changing unrelated behavior" --root .
 ```
+The workflow asks for the exact test/build command first. It proposes a unified diff, shows target paths and likely related files, and requires `APPLY` before each patch. The exact test/build command requires `RUN`. A failed test may lead to another proposal only after typing `REPAIR`, with at most three attempts. Stop any time by declining a confirmation.
 
-See [AndroidIDE setup](docs/ANDROIDIDE_SETUP.md), [architecture](docs/ARCHITECTURE.md), and [roadmap](docs/ROADMAP.md).
+## Development checks
+```sh
+python -m py_compile sq_dev_aigent/*.py
+python -m unittest discover -s tests -v
+sh -n install.sh
+sh tests/test_installer.sh
+```
+GitHub Actions runs compilation, unit tests, catalog validation, installer syntax, and a shared-install smoke test. Check the Actions tab for the actual result; repository commits alone do not prove CI passed.
+
+See [master blueprint](docs/MASTER_BLUEPRINT.md), [AndroidIDE setup](docs/ANDROIDIDE_SETUP.md), [architecture](docs/ARCHITECTURE.md), [roadmap](docs/ROADMAP.md), and [project status](docs/PROJECT_STATUS.md).
