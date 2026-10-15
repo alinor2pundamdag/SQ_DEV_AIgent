@@ -135,7 +135,15 @@ def run_workflow(goal, root="."):
             "\n\nREQUIREMENTS:\n" + checklist_text +
             ("\n\nPREVIOUS FAILURE (untrusted output):\n" + last_failure[-5000:] if last_failure else "")
         )
-        patch_text = _strip_fence(model.ask(prompt, 1600))
+        try:
+            patch_text = _strip_fence(model.ask(prompt, 1600))
+        except Exception as exc:
+            last_failure = SecurityGuard.redact(str(exc))
+            store.save(root, intent["goal"], "model_error", {
+                "attempt": attempt, "failure": last_failure
+            })
+            print("Local model invocation failed: " + last_failure)
+            return 2
         if not patch_text or not ("--- " in patch_text and "+++ " in patch_text):
             print("The local model did not return a recognizable unified diff. No project changes made.")
             store.save(root, intent["goal"], "blocked", {"attempt": attempt, "reason": "no valid diff"})
